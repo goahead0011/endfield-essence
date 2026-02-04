@@ -178,11 +178,20 @@ function renderWeaponList() {
     // Create an array with original index to maintain reference
     const filteredWeapons = WEAPONS.map((weapon, index) => ({ weapon, index }))
         .filter(item => {
+            // Always show selected weapons regardless of filters
+            if (selectedWeapons.includes(item.index)) return true;
+
             if (currentTypeFilter !== "전체" && item.weapon.type !== currentTypeFilter) return false;
             if (currentSearchQuery && !item.weapon.name.toLowerCase().includes(currentSearchQuery)) return false;
             return true;
         })
         .sort((a, b) => {
+            // Sort by Selection (Selected First)
+            const aSelected = selectedWeapons.includes(a.index);
+            const bSelected = selectedWeapons.includes(b.index);
+            if (aSelected && !bSelected) return -1;
+            if (!aSelected && bSelected) return 1;
+
             // Sort by Rarity Descending
             if (b.weapon.rarity !== a.weapon.rarity) {
                 return b.weapon.rarity - a.weapon.rarity;
@@ -234,6 +243,8 @@ function renderWeaponList() {
     if (weaponListEl.children.length === 0) {
         weaponListEl.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 20px; color: #888;">검색 결과가 없습니다.</div>`;
     }
+
+    updateUI(); // Re-apply selection state after rendering
 }
 
 function updateUI() {
