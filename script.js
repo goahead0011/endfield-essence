@@ -258,15 +258,10 @@ function updateUI() {
         
         if (isSelected) {
             card.classList.add('selected');
-            card.classList.remove('disabled');
         } else {
             card.classList.remove('selected');
-            if (selectedWeapons.length >= 4) {
-                card.classList.add('disabled');
-            } else {
-                card.classList.remove('disabled');
-            }
         }
+        card.classList.remove('disabled'); // Always enabled
     });
     
     // Update selected summary
@@ -290,9 +285,7 @@ function toggleSelection(index) {
     if (selectedWeapons.includes(index)) {
         selectedWeapons = selectedWeapons.filter(i => i !== index);
     } else {
-        if (selectedWeapons.length < 4) {
-            selectedWeapons.push(index);
-        }
+        selectedWeapons.push(index);
     }
     updateUI();
     resultsSection.classList.add('hidden'); // Hide results on change
