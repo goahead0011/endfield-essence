@@ -8,6 +8,18 @@
 // "최대 생명력" -> "생명력" (Standardized by User Request)
 // All "XX 증가" -> "XX"
 
+const OPTION_CATEGORIES = {
+    "기초 속성": ["민첩", "힘", "의지", "지능", "주요 능력치"],
+    "추가 속성": [
+        "공격력", "생명력", "물리 피해", "열기 피해", "전기 피해", "냉기 피해", "자연 피해", 
+        "아츠 피해", "오리지늄 아츠 강도", "치명타 확률", "궁극기 충전 효율", "치유 효율"
+    ],
+    "스킬 속성": [
+        "강공", "억제", "추격", "분쇄", "기예", "방출", "흐름", "효율", 
+        "사기", "잔혹", "고통", "의료", "골절", "어둠"
+    ]
+};
+
 const ZONES = [
     {
         id: "zone4_stronghold",
@@ -364,13 +376,48 @@ function renderResults(results) {
         
         // Satisfied List
         if (result.satisfied.length > 0) {
-            const satisfiedHtml = result.satisfied.map(w => 
-                `<span class="weapon-cylinder rarity-${w.rarity}">${w.name}</span>`
-            ).join('');
+            const satisfiedHtml = result.satisfied.map(w => {
+                // Categorize options
+                const categorized = {
+                    "기초 속성": [],
+                    "추가 속성": [],
+                    "스킬 속성": []
+                };
+
+                w.options.forEach(opt => {
+                    for (const [cat, list] of Object.entries(OPTION_CATEGORIES)) {
+                        if (list.includes(opt)) {
+                            categorized[cat].push(opt);
+                            break;
+                        }
+                    }
+                });
+
+                // Build HTML for categorized options
+                let optionsHtml = '';
+                for (const [cat, opts] of Object.entries(categorized)) {
+                    if (opts.length > 0) {
+                        optionsHtml += `
+                            <div class="option-category">
+                                <span class="category-label">${cat}:</span>
+                                <span class="category-values">${opts.join(', ')}</span>
+                            </div>
+                        `;
+                    }
+                }
+
+                return `
+                <div class="satisfied-weapon-row">
+                    <div class="weapon-cylinder rarity-${w.rarity}">${w.name}</div>
+                    <div class="weapon-valid-options">
+                        ${optionsHtml}
+                    </div>
+                </div>`;
+            }).join('');
             
             content += `<div class="match-item match-success">
                 <div class="result-label">가능 (종결 파밍 가능):</div>
-                <div class="result-weapon-list">${satisfiedHtml}</div>
+                <div class="result-weapon-list vertical">${satisfiedHtml}</div>
             </div>`;
         }
         
