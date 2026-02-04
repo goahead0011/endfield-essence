@@ -1,0 +1,480 @@
+:root {
+    --bg-color: #1a1a1a;
+    --card-bg: #2d2d2d;
+    --text-primary: #ffffff;
+    --text-secondary: #b0b0b0;
+    --accent-color: #f7b900; /* Endfield Yellow-ish */
+    --accent-hover: #d4a000;
+    --border-color: #444;
+    --success-color: #4caf50;
+    --warning-color: #ff9800;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    line-height: 1.6;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding: 2rem 0;
+    border-bottom: 2px solid var(--accent-color);
+}
+
+header h1 {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    color: var(--accent-color);
+}
+
+section {
+    margin-bottom: 2rem;
+    background: var(--card-bg);
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+}
+
+h2 {
+    margin-bottom: 1rem;
+    border-left: 4px solid var(--accent-color);
+    padding-left: 10px;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); /* Smaller cards */
+    gap: 15px;
+    margin-bottom: 1.5rem;
+}
+
+.weapon-card {
+    background: #2a2a2a;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    user-select: none;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.weapon-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    z-index: 10;
+}
+
+/* Icon Area */
+.weapon-icon-wrapper {
+    width: 100%;
+    aspect-ratio: 1/1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    background: linear-gradient(135deg, #333 0%, #222 100%);
+}
+
+.weapon-icon-inner svg {
+    width: 60px;
+    height: 60px;
+    stroke: #888;
+    transition: stroke 0.2s;
+}
+
+.rarity-bg-6 {
+    border-bottom: 3px solid #ff5252;
+}
+.rarity-bg-6 .weapon-icon-inner svg {
+    stroke: #ffcdd2; /* Red tint */
+}
+/* Rarity 6 Glow on hover check later */
+
+.rarity-bg-5 {
+    border-bottom: 3px solid #fdd835;
+}
+.rarity-bg-5 .weapon-icon-inner svg {
+    stroke: #fff9c4; /* Yellow tint */
+}
+
+.rarity-badge {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: #fff;
+    background: rgba(0,0,0,0.6);
+}
+
+.rarity-bg-6 .rarity-badge {
+    color: #ff5252;
+}
+.rarity-bg-5 .rarity-badge {
+    color: #fdd835;
+}
+
+/* Info Area */
+.weapon-info {
+    padding: 10px;
+    text-align: center;
+    background: #333;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.weapon-name {
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: #eee;
+    margin-bottom: 5px;
+    line-height: 1.2;
+}
+
+.weapon-options-mini {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 3px;
+    margin-top: 5px;
+}
+
+.weapon-options-mini span {
+    font-size: 0.65rem;
+    background: #444;
+    color: #aaa;
+    padding: 1px 4px;
+    border-radius: 2px;
+}
+
+/* States */
+.selected-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(247, 185, 0, 0.2);
+    border: 2px solid var(--accent-color);
+    border-radius: 8px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none; /* Let clicks pass through if needed, though card handles it */
+}
+
+.selected-overlay svg {
+    width: 40px;
+    height: 40px;
+    stroke: var(--accent-color);
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    padding: 8px;
+}
+
+.weapon-card.selected .selected-overlay {
+    display: flex;
+}
+
+.weapon-card.selected {
+    transform: translateY(-2px);
+    box-shadow: 0 0 15px rgba(247, 185, 0, 0.2);
+}
+
+.weapon-card.disabled {
+    opacity: 0.4;
+    filter: grayscale(1);
+    cursor: default;
+}
+.weapon-card.disabled:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+/* Removed old class styles to avoid conflict */
+/* 
+.weapon-rarity, .rarity-6, .rarity-5, .weapon-options were removed in favor of new structure 
+*/
+
+.selection-summary {
+    background: #222;
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+}
+
+#selected-weapons-display {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 5px;
+}
+
+.selected-tag {
+    background: var(--accent-color);
+    color: #000;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.2s;
+}
+
+.primary-btn {
+    background-color: var(--accent-color);
+    color: #1a1a1a;
+    width: 100%;
+}
+
+.primary-btn:hover {
+    background-color: var(--accent-hover);
+}
+
+.primary-btn:disabled {
+    background-color: #555;
+    color: #888;
+    cursor: not-allowed;
+}
+
+.secondary-btn {
+    background-color: transparent;
+    border: 1px solid var(--text-secondary);
+    color: var(--text-secondary);
+    margin-right: 10px;
+}
+
+.secondary-btn:hover {
+    border-color: var(--text-primary);
+    color: var(--text-primary);
+}
+
+.hidden {
+    display: none;
+}
+
+/* Results Styles */
+.result-group {
+    margin-bottom: 2rem;
+}
+
+.result-group h3 {
+    margin-bottom: 10px;
+    color: var(--accent-color);
+}
+
+.zone-card {
+    background: #333;
+    padding: 15px;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    border-left: 5px solid #555;
+}
+
+.zone-card.perfect-match {
+    border-left-color: var(--success-color);
+}
+
+.zone-card.partial-match {
+    border-left-color: var(--warning-color);
+}
+
+.zone-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.zone-name {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.zone-score {
+    font-size: 0.9rem;
+    background: #444;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+.match-details {
+    display: grid;
+    gap: 10px;
+}
+
+.match-item {
+    font-size: 0.9rem;
+    padding: 5px;
+    border-radius: 4px;
+}
+
+.match-success {
+    color: #81c784; /* Light green */
+}
+
+.match-fail {
+    color: #e57373; /* Light red */
+    opacity: 0.7;
+}
+
+.match-fail span {
+    text-decoration: line-through;
+}
+
+@media (min-width: 768px) {
+    .primary-btn {
+        width: auto;
+    }
+}
+
+/* Result Section Cylinder Styles */
+.result-label {
+    font-weight: bold;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.result-weapon-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+}
+
+.result-weapon-list.vertical {
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.unsatisfied-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 6px;
+}
+
+.weapon-cylinder {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 50px; /* Cylinder Shape */
+    font-size: 0.85rem;
+    font-weight: bold;
+    color: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+    white-space: nowrap;
+}
+
+.weapon-cylinder.rarity-6 {
+    background: linear-gradient(135deg, #e53935 0%, #b71c1c 100%);
+    border: 1px solid #ff8a80;
+    color: #ffebee;
+}
+
+.weapon-cylinder.rarity-5 {
+    background: linear-gradient(135deg, #fbc02d 0%, #f57f17 100%);
+    border: 1px solid #fff59d;
+    color: #fffde7;
+}
+
+.weapon-cylinder.unsatisfied {
+    opacity: 0.9;
+    filter: grayscale(0.2);
+    position: relative;
+}
+
+/* Add a strikethrough effect or specific style for unsatisfied if wanted, 
+   but user just said show it in cylinder. 
+   Maybe a small red dot? No let's keep it simple as requested. 
+*/
+
+.missing-text {
+    font-size: 0.9rem;
+    color: #ef9a9a; /* Softer red */
+    font-weight: 500;
+}
+
+
+/* Filter Section Styles */
+#filter-section {
+    margin-bottom: 20px;
+    background: #333;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #444;
+}
+
+#search-input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 4px;
+    border: 1px solid #555;
+    background: #222;
+    color: #fff;
+    margin-bottom: 15px;
+    font-size: 1rem;
+}
+
+#search-input:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 5px rgba(247, 185, 0, 0.3);
+}
+
+.tabs-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.tab-btn {
+    padding: 8px 16px;
+    background: #444;
+    border: none;
+    border-radius: 20px;
+    color: #ccc;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+.tab-btn:hover {
+    background: #555;
+    color: #fff;
+}
+
+.tab-btn.active {
+    background: var(--accent-color);
+    color: #000;
+    font-weight: bold;
+    box-shadow: 0 0 10px rgba(247, 185, 0, 0.3);
+}
+
