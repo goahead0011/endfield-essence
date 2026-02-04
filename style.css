@@ -478,3 +478,17 @@ button {
     box-shadow: 0 0 10px rgba(247, 185, 0, 0.3);
 }
 
+
+ / *   U t i l i t y   C l a s s e s   f o r   C S P   C o m p l i a n c e   * / 
+ . e m p t y - m e s s a g e   { 
+         g r i d - c o l u m n :   1 / - 1 ; 
+         t e x t - a l i g n :   c e n t e r ; 
+         p a d d i n g :   2 0 p x ; 
+         c o l o r :   # 8 8 8 ; 
+ } 
+ 
+ . n o - r e s u l t - m e s s a g e   { 
+         p a d d i n g :   1 0 p x ; 
+         t e x t - a l i g n :   c e n t e r ; 
+ }  
+ 

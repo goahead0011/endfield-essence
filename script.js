@@ -241,7 +241,7 @@ function renderWeaponList() {
     
     // Empty State Message
     if (weaponListEl.children.length === 0) {
-        weaponListEl.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 20px; color: #888;">검색 결과가 없습니다.</div>`;
+        weaponListEl.innerHTML = `<div class="empty-message">검색 결과가 없습니다.</div>`;
     }
 
     updateUI(); // Re-apply selection state after rendering
@@ -348,7 +348,7 @@ function renderResults(results) {
     // Let's just list them, but visually distinguish "Perfect for all selected" vs "Partial".
     
     if (results[0].score === 0) {
-        resultsContainer.innerHTML = '<p style="padding:10px; text-align:center;">선택한 무기의 종결 기질을 얻을 수 있는 지역이 없습니다.</p>';
+        resultsContainer.innerHTML = '<p class="no-result-message">선택한 무기의 종결 기질을 얻을 수 있는 지역이 없습니다.</p>';
         return;
     }
 
