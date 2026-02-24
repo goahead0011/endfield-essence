@@ -606,9 +606,10 @@ function renderAnalyzerResults(matches, inputOptions) {
                     // Highlight matched options
                     const highlightedOpts = opts.map(opt => {
                         if (inputOptions.includes(opt)) {
-                            return `<span style="color: var(--success-color); font-weight: bold;">${opt}</span>`;
+                            return `<span style="color: var(--success-color); font-weight: bold; text-shadow: 0 0 5px rgba(76, 175, 80, 0.3);">${opt}</span>`;
                         }
-                        return opt;
+                        // Non-matching valid options: distinct color (muted gray to indicate missing)
+                        return `<span style="color: #999;">${opt}</span>`;
                     });
 
                     optionsHtml += `
