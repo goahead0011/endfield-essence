@@ -630,3 +630,22 @@ button {
 .text-perfect { color: #ff5252; text-shadow: 0 0 5px rgba(255, 82, 82, 0.5); }
 .text-high { color: #ffd740; }
 .text-normal { color: #40c4ff; }
+.opt-matched {
+    color: #4caf50;
+    font-weight: 700;
+    text-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+}
+
+.opt-missing {
+    color: #888;
+}
+/* --- Gizil Analyzer Result Highlight --- */
+.opt-matched {
+    color: #4caf50;
+    font-weight: 700;
+    text-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+}
+
+.opt-missing {
+    color: #888;
+}
