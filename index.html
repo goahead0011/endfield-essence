@@ -13,13 +13,19 @@
     <div class="container">
         <header>
             <h1>엔드필드 기질 파밍 효율 계산기</h1>
-            <p>파티에 사용하는 무기를 선택하여 가장 효율적인 기질 파밍 지역을 확인하세요.</p>
+            <p>파티에 사용하는 무기를 선택하여 가장 효율적인 기질 파밍 지역을 확인하거나, 보유한 기질이 어떤 무기에 유효한지 분석하세요.</p>
         </header>
 
-        <section id="weapon-selector">
-            <h2>무기 선택</h2>
-            
-            <div class="selection-summary">
+        <nav class="main-nav">
+            <button id="nav-farming" class="nav-btn active">파밍 지역 찾기</button>
+            <button id="nav-analyzer" class="nav-btn">기질 유효성 분석</button>
+        </nav>
+
+        <div id="farming-calculator">
+            <section id="weapon-selector">
+                <h2>무기 선택</h2>
+                
+                <div class="selection-summary">
                 <p>선택된 무기: <span id="selected-count">0</span>개</p>
                 <div id="selected-weapons-display"></div>
             </div>
@@ -45,7 +51,47 @@
                 <!-- Results will be displayed here -->
             </div>
         </section>
-    </div>
+        </div> <!-- End of farming-calculator -->
+
+        <div id="gizil-analyzer" class="hidden">
+            <section class="analyzer-input-section">
+                <h2>보유 기질 옵션 입력</h2>
+                <p class="description">획득한 기질의 3가지 속성을 입력하여 유효한 무기를 찾으세요.</p>
+                
+                <div class="analyzer-form">
+                    <div class="form-group">
+                        <label for="base-attr">기초 속성</label>
+                        <select id="base-attr" class="gizil-select">
+                            <option value="">선택하세요</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="extra-attr">추가 속성</label>
+                        <select id="extra-attr" class="gizil-select">
+                            <option value="">선택하세요</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="skill-attr">스킬 속성</label>
+                        <select id="skill-attr" class="gizil-select">
+                            <option value="">선택하세요</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button id="reset-analyzer-btn" class="secondary-btn">초기화</button>
+                    <button id="run-analysis-btn" class="primary-btn">유효 무기 찾기</button>
+                </div>
+            </section>
+
+            <section id="analyzer-results" class="hidden">
+                <h3>분석 결과 <span id="perfect-match-count">(0)</span></h3>
+                <div id="analyzer-results-list" class="grid-container"></div>
+            </section>
+        </div>
 
     <footer>
         <p>Fan Website for Arknights: Endfield</p>

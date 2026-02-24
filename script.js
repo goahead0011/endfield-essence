@@ -444,5 +444,173 @@ function renderResults(results) {
     resultsContainer.scrollIntoView({ behavior: 'smooth' });
 }
 
+
+// --- Gizil Analyzer Logic ---
+
+function initAnalyzer() {
+    // Populate Dropdowns
+    const baseSelect = document.getElementById('base-attr');
+    const extraSelect = document.getElementById('extra-attr');
+    const skillSelect = document.getElementById('skill-attr');
+
+    // Populate Base Attributes
+    OPTION_CATEGORIES["기초 속성"].forEach(opt => {
+        const option = document.createElement('option');
+        option.value = opt;
+        option.textContent = opt;
+        baseSelect.appendChild(option);
+    });
+
+    // Populate Extra Attributes
+    OPTION_CATEGORIES["추가 속성"].forEach(opt => {
+        const option = document.createElement('option');
+        option.value = opt;
+        option.textContent = opt;
+        extraSelect.appendChild(option);
+    });
+
+    // Populate Skill Attributes
+    OPTION_CATEGORIES["스킬 속성"].forEach(opt => {
+        const option = document.createElement('option');
+        option.value = opt;
+        option.textContent = opt;
+        skillSelect.appendChild(option);
+    });
+
+    // Navigation Logic
+    document.getElementById('nav-farming').addEventListener('click', () => {
+        switchTab('farming');
+    });
+
+    document.getElementById('nav-analyzer').addEventListener('click', () => {
+        switchTab('analyzer');
+    });
+
+    // Analysis Logic
+    document.getElementById('run-analysis-btn').addEventListener('click', runGizilAnalysis);
+    document.getElementById('reset-analyzer-btn').addEventListener('click', resetAnalyzer);
+}
+
+function switchTab(tabName) {
+    const farmingSection = document.getElementById('farming-calculator');
+    const analyzerSection = document.getElementById('gizil-analyzer');
+    const navFarming = document.getElementById('nav-farming');
+    const navAnalyzer = document.getElementById('nav-analyzer');
+
+    if (tabName === 'farming') {
+        farmingSection.classList.remove('hidden');
+        analyzerSection.classList.add('hidden');
+        navFarming.classList.add('active');
+        navAnalyzer.classList.remove('active');
+    } else {
+        farmingSection.classList.add('hidden');
+        analyzerSection.classList.remove('hidden');
+        navFarming.classList.remove('active');
+        navAnalyzer.classList.add('active');
+    }
+}
+
+function resetAnalyzer() {
+    document.getElementById('base-attr').value = '';
+    document.getElementById('extra-attr').value = '';
+    document.getElementById('skill-attr').value = '';
+    document.getElementById('analyzer-results').classList.add('hidden');
+    document.getElementById('analyzer-results-list').innerHTML = '';
+    document.getElementById('perfect-match-count').textContent = '(0)';
+}
+
+function runGizilAnalysis() {
+    const baseVal = document.getElementById('base-attr').value;
+    const extraVal = document.getElementById('extra-attr').value;
+    const skillVal = document.getElementById('skill-attr').value;
+
+    if (!baseVal && !extraVal && !skillVal) {
+        alert("최소한 하나의 속성을 선택해주세요.");
+        return;
+    }
+
+    const inputOptions = [baseVal, extraVal, skillVal].filter(val => val !== "");
+    
+    // Find weapons that contain ALL input options (Perfect Match logic requested)
+    const matches = WEAPONS.filter(weapon => {
+        const weaponOptions = new Set(weapon.options);
+        // Check if every input option exists in the weapon's options
+        return inputOptions.every(opt => weaponOptions.has(opt));
+    });
+
+    renderAnalyzerResults(matches, inputOptions);
+}
+
+function renderAnalyzerResults(matches, inputOptions) {
+    const container = document.getElementById('analyzer-results-list');
+    const resultSection = document.getElementById('analyzer-results');
+    const countSpan = document.getElementById('perfect-match-count');
+
+    container.innerHTML = '';
+    countSpan.textContent = `(${matches.length})`;
+    resultSection.classList.remove('hidden');
+
+    if (matches.length === 0) {
+        container.innerHTML = '<p style="text-align:center; grid-column: 1/-1; color: #888;">일치하는 무기가 없습니다.</p>';
+        return;
+    }
+
+    matches.forEach(w => {
+        // Highlight matching options
+        let optionsHtml = '';
+        
+        // Categorize weapon options for display
+        const categories = {
+            "기초 속성": [],
+            "추가 속성": [],
+            "스킬 속성": []
+        };
+
+        w.options.forEach(opt => {
+            for (const [catName, catOpts] of Object.entries(OPTION_CATEGORIES)) {
+                if (catOpts.includes(opt)) {
+                    categories[catName].push(opt);
+                    break;
+                }
+            }
+        });
+
+        // Generate HTML for options with highlight
+        for (const [cat, opts] of Object.entries(categories)) {
+            if (opts.length > 0) {
+                // Highlight matched options
+                const highlightedOpts = opts.map(opt => {
+                    if (inputOptions.includes(opt)) {
+                        return `<span style="color: var(--success-color); font-weight: bold;">${opt}</span>`;
+                    }
+                    return opt;
+                });
+
+                optionsHtml += `
+                    <div class="option-category">
+                        <span class="category-label">${cat}:</span>
+                        <span class="category-values">${highlightedOpts.join(', ')}</span>
+                    </div>
+                `;
+            }
+        }
+
+        const weaponCard = document.createElement('div');
+        weaponCard.className = 'satisfied-weapon-row'; // Reuse existing style
+        weaponCard.style.cssText = 'display: flex; flex-direction: column; background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 4px;';
+        
+        weaponCard.innerHTML = `
+            <div class="weapon-cylinder rarity-${w.rarity}" style="margin-bottom: 0.5rem; align-self: flex-start;">${w.name}</div>
+            <div class="weapon-valid-options">
+                ${optionsHtml}
+            </div>
+        `;
+        
+        container.appendChild(weaponCard);
+    });
+}
+
 // Start
 init();
+initAnalyzer();
+
