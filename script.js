@@ -531,11 +531,21 @@ function runGizilAnalysis() {
 
     const inputOptions = [baseVal, extraVal, skillVal].filter(val => val !== "");
     
-    // Find weapons that contain ALL input options (Perfect Match logic requested)
-    const matches = WEAPONS.filter(weapon => {
+    // Group matches by count
+    const matches = {
+        3: [],
+        2: [],
+        1: []
+    };
+
+    WEAPONS.forEach(weapon => {
         const weaponOptions = new Set(weapon.options);
-        // Check if every input option exists in the weapon's options
-        return inputOptions.every(opt => weaponOptions.has(opt));
+        // Count how many input options are present in the weapon's options
+        const matchCount = inputOptions.reduce((count, opt) => count + (weaponOptions.has(opt) ? 1 : 0), 0);
+        
+        if (matches[matchCount]) {
+            matches[matchCount].push(weapon);
+        }
     });
 
     renderAnalyzerResults(matches, inputOptions);
@@ -547,67 +557,95 @@ function renderAnalyzerResults(matches, inputOptions) {
     const countSpan = document.getElementById('perfect-match-count');
 
     container.innerHTML = '';
-    countSpan.textContent = `(${matches.length})`;
+    const totalMatches = matches[3].length + matches[2].length + matches[1].length;
+    countSpan.textContent = `(${totalMatches})`;
     resultSection.classList.remove('hidden');
 
-    if (matches.length === 0) {
+    if (totalMatches === 0) {
         container.innerHTML = '<p style="text-align:center; grid-column: 1/-1; color: #888;">일치하는 무기가 없습니다.</p>';
         return;
     }
 
-    matches.forEach(w => {
-        // Highlight matching options
-        let optionsHtml = '';
-        
-        // Categorize weapon options for display
-        const categories = {
-            "기초 속성": [],
-            "추가 속성": [],
-            "스킬 속성": []
-        };
+    // Helper to render sections
+    const renderSection = (title, weaponList, titleClass = '') => {
+        if (weaponList.length === 0) return;
 
-        w.options.forEach(opt => {
-            for (const [catName, catOpts] of Object.entries(OPTION_CATEGORIES)) {
-                if (catOpts.includes(opt)) {
-                    categories[catName].push(opt);
-                    break;
+        const sectionHeader = document.createElement('h4');
+        sectionHeader.textContent = `${title} (${weaponList.length})`;
+        sectionHeader.className = `result-group-header ${titleClass}`;
+        sectionHeader.style.gridColumn = '1 / -1';
+        sectionHeader.style.marginTop = '1.5rem';
+        sectionHeader.style.marginBottom = '0.5rem';
+        sectionHeader.style.borderBottom = '1px solid #444';
+        sectionHeader.style.paddingBottom = '0.5rem';
+        container.appendChild(sectionHeader);
+
+        weaponList.forEach(w => {
+            // Highlight matching options
+            let optionsHtml = '';
+            
+            // Categorize weapon options for display
+            const categories = {
+                "기초 속성": [],
+                "추가 속성": [],
+                "스킬 속성": []
+            };
+
+            w.options.forEach(opt => {
+                for (const [catName, catOpts] of Object.entries(OPTION_CATEGORIES)) {
+                    if (catOpts.includes(opt)) {
+                        categories[catName].push(opt);
+                        break;
+                    }
+                }
+            });
+
+            // Generate HTML for options with highlight
+            for (const [cat, opts] of Object.entries(categories)) {
+                if (opts.length > 0) {
+                    // Highlight matched options
+                    const highlightedOpts = opts.map(opt => {
+                        if (inputOptions.includes(opt)) {
+                            return `<span style="color: var(--success-color); font-weight: bold;">${opt}</span>`;
+                        }
+                        return opt;
+                    });
+
+                    optionsHtml += `
+                        <div class="option-category">
+                            <span class="category-label">${cat}:</span>
+                            <span class="category-values">${highlightedOpts.join(', ')}</span>
+                        </div>
+                    `;
                 }
             }
+
+            const weaponCard = document.createElement('div');
+            // Use existing styles but ensure it looks like a card
+            weaponCard.className = 'satisfied-weapon-row'; 
+            weaponCard.style.cssText = 'display: flex; flex-direction: column; background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 4px; border: 1px solid #444;';
+            
+            weaponCard.innerHTML = `
+                <div class="weapon-cylinder rarity-${w.rarity}" style="margin-bottom: 0.5rem; align-self: flex-start;">${w.name}</div>
+                <div class="weapon-valid-options">
+                    ${optionsHtml}
+                </div>
+            `;
+            
+            container.appendChild(weaponCard);
         });
+    };
 
-        // Generate HTML for options with highlight
-        for (const [cat, opts] of Object.entries(categories)) {
-            if (opts.length > 0) {
-                // Highlight matched options
-                const highlightedOpts = opts.map(opt => {
-                    if (inputOptions.includes(opt)) {
-                        return `<span style="color: var(--success-color); font-weight: bold;">${opt}</span>`;
-                    }
-                    return opt;
-                });
-
-                optionsHtml += `
-                    <div class="option-category">
-                        <span class="category-label">${cat}:</span>
-                        <span class="category-values">${highlightedOpts.join(', ')}</span>
-                    </div>
-                `;
-            }
-        }
-
-        const weaponCard = document.createElement('div');
-        weaponCard.className = 'satisfied-weapon-row'; // Reuse existing style
-        weaponCard.style.cssText = 'display: flex; flex-direction: column; background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 4px;';
-        
-        weaponCard.innerHTML = `
-            <div class="weapon-cylinder rarity-${w.rarity}" style="margin-bottom: 0.5rem; align-self: flex-start;">${w.name}</div>
-            <div class="weapon-valid-options">
-                ${optionsHtml}
-            </div>
-        `;
-        
-        container.appendChild(weaponCard);
-    });
+    // Render grouped results
+    if (matches[3].length > 0) {
+        renderSection('🔥 3옵션 일치 (완벽)', matches[3], 'text-perfect');
+    }
+    if (matches[2].length > 0) {
+        renderSection('✨ 2옵션 일치', matches[2], 'text-high');
+    }
+    if (matches[1].length > 0) {
+        renderSection('🔹 1옵션 일치', matches[1], 'text-normal');
+    }
 }
 
 // Start

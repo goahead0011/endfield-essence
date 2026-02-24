@@ -622,3 +622,11 @@ button {
     gap: 1.5rem;
     margin-top: 1.5rem;
 }
+.result-group-header {
+    color: var(--text-primary);
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+.text-perfect { color: #ff5252; text-shadow: 0 0 5px rgba(255, 82, 82, 0.5); }
+.text-high { color: #ffd740; }
+.text-normal { color: #40c4ff; }
