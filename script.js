@@ -143,6 +143,41 @@ let selectedWeapons = [];
 let currentTypeFilter = "전체";
 let currentSearchQuery = "";
 
+// Search Helpers
+const CHOSEONG = ["ㄱ", "ㄲ", "ㄴ", "ㄷ", "ㄸ", "ㄹ", "ㅁ", "ㅂ", "ㅃ", "ㅅ", "ㅆ", "ㅇ", "ㅈ", "ㅉ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ"];
+
+function normalizeSearchText(text) {
+    return (text || "")
+        .toLowerCase()
+        .replace(/\s+/g, "")
+        .replace(/[^a-z0-9ㄱ-ㅎ가-힣]/g, "");
+}
+
+function extractChoseong(text) {
+    let result = "";
+    for (const ch of (text || "")) {
+        const code = ch.charCodeAt(0);
+        if (code >= 0xac00 && code <= 0xd7a3) {
+            const choseongIndex = Math.floor((code - 0xac00) / 588);
+            result += CHOSEONG[choseongIndex];
+        } else if (/[ㄱ-ㅎ]/.test(ch)) {
+            result += ch;
+        }
+    }
+    return result;
+}
+
+function isWeaponNameMatch(name, query) {
+    const normalizedQuery = normalizeSearchText(query);
+    if (!normalizedQuery) return true;
+
+    const normalizedName = normalizeSearchText(name);
+    if (normalizedName.includes(normalizedQuery)) return true;
+
+    const nameChoseong = extractChoseong(name);
+    return nameChoseong.includes(normalizedQuery);
+}
+
 
 // DOM Elements
 const weaponListEl = document.getElementById('weapon-list');
@@ -164,7 +199,7 @@ function init() {
     analyzeBtn.addEventListener('click', analyze);
     resetBtn.addEventListener('click', resetSelection);
     searchInput.addEventListener('input', (e) => {
-        currentSearchQuery = e.target.value.toLowerCase();
+        currentSearchQuery = e.target.value;
         renderWeaponList();
     });
 }
@@ -197,7 +232,7 @@ function renderWeaponList() {
             if (selectedWeapons.includes(item.index)) return true;
 
             if (currentTypeFilter !== "전체" && item.weapon.type !== currentTypeFilter) return false;
-            if (currentSearchQuery && !item.weapon.name.toLowerCase().includes(currentSearchQuery)) return false;
+            if (!isWeaponNameMatch(item.weapon.name, currentSearchQuery)) return false;
             return true;
         })
         .sort((a, b) => {
