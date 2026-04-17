@@ -78,7 +78,7 @@ const WEAPONS = [
     { name: "장대한 염원", type: "한손검", rarity: 6, options: ["민첩", "공격력", "고통"] },
     { name: "용조의 불꽃", type: "한손검", rarity: 6, options: ["지능", "공격력", "어둠"] },
     { name: "암흑의 횃불", type: "한손검", rarity: 6, options: ["지능", "열기 피해", "고통"] },
-    { name: "로시 전용무기", type: "한손검", rarity: 6, options: ["민첩", "치명타 확률", "골절"] },
+    { name: "늑대의 혈흔", type: "한손검", rarity: 6, options: ["민첩", "치명타 확률", "골절"] },
     // 5 Star
     { name: "강철의 여운", type: "한손검", rarity: 5, options: ["민첩", "물리 피해", "기예"] },
     { name: "숭배의 시선", type: "한손검", rarity: 5, options: ["민첩", "물리 피해", "어둠"] },
@@ -113,7 +113,7 @@ const WEAPONS = [
     { name: "쐐기", type: "권총", rarity: 6, options: ["주요 능력치", "치명타 확률", "고통"] },
     { name: "예술의 폭군", type: "권총", rarity: 6, options: ["지능", "치명타 확률", "골절"] },
     { name: "항로의 개척자", type: "권총", rarity: 6, options: ["지능", "냉기 피해", "고통"] },
-    { name: "탕탕 전용무기", type: "권총", rarity: 6, options: ["민첩", "공격력", "방출"] },
+    { name: "반항", type: "권총", rarity: 6, options: ["민첩", "공격력", "방출"] },
     // 권총 (5성)
     { name: "이성적인 작별", type: "권총", rarity: 5, options: ["힘", "열기 피해", "추격"] },
     { name: "O.B.J. 벨로시투스", type: "권총", rarity: 5, options: ["민첩", "궁극기 충전 효율", "방출"] }, // 궁극기 충전 효율 -> 궁극기 충전 효율
@@ -132,6 +132,7 @@ const WEAPONS = [
     { name: "황무지의 방랑자", type: "아츠 유닛", rarity: 5, options: ["지능", "전기 피해", "고통"] },
     { name: "무가내하", type: "아츠 유닛", rarity: 5, options: ["의지", "궁극기 충전 효율", "사기"] }, // 궁극기 충전 효율 -> 궁극기 충전 효율
     { name: "망자의 노래", type: "아츠 유닛", rarity: 5, options: ["지능", "공격력", "어둠"] },
+    { name: "고독한 나룻배", type: "아츠 유닛", rarity: 5, options: ["의지", "공격력", "억제"] },
 ];
 
 // Weapon Types
