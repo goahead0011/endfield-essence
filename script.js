@@ -126,13 +126,13 @@ const WEAPONS = [
     { name: "바다와 별의 꿈", type: "아츠 유닛", rarity: 6, options: ["지능", "치유 효율", "고통"] },
     { name: "사명의 길", type: "아츠 유닛", rarity: 6, options: ["의지", "궁극기 충전 효율", "추격"] }, // 궁극기 충전 효율 -> 궁극기 충전 효율
     { name: "작품: 침식 흔적", type: "아츠 유닛", rarity: 6, options: ["의지", "자연 피해", "억제"] },
+    { name: "고독한 나룻배", type: "아츠 유닛", rarity: 6, options: ["의지", "공격력", "억제"] },
     // 아츠 유닛 (5성)
     { name: "O.B.J. 아츠 아이덴티티", type: "아츠 유닛", rarity: 5, options: ["지능", "오리지늄 아츠 강도", "추격"] }, // 오리지늄 아츠 강도 -> 오리지늄 아츠 강도
     { name: "선교의 자유", type: "아츠 유닛", rarity: 5, options: ["의지", "치유 효율", "의료"] },
     { name: "황무지의 방랑자", type: "아츠 유닛", rarity: 5, options: ["지능", "전기 피해", "고통"] },
     { name: "무가내하", type: "아츠 유닛", rarity: 5, options: ["의지", "궁극기 충전 효율", "사기"] }, // 궁극기 충전 효율 -> 궁극기 충전 효율
     { name: "망자의 노래", type: "아츠 유닛", rarity: 5, options: ["지능", "공격력", "어둠"] },
-    { name: "고독한 나룻배", type: "아츠 유닛", rarity: 5, options: ["의지", "공격력", "억제"] },
 ];
 
 // Weapon Types
